@@ -9,7 +9,10 @@
       flake = false;
     };
 
-    dream2nix.url = "github:nix-community/dream2nix";
+    dream2nix = {
+      url = "github:nix-community/dream2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs = {
     self,
