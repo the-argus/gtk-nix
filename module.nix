@@ -23,7 +23,7 @@ in {
     };
 
     # "build" the package
-    dream = dreamlib.${pkgs.system}.makeOutputs {inherit patchedSource;};
+    dream = dreamlib.${pkgs.system}.makeOutputs {source = patchedSource;};
     patchedPhisch = dream.packages.phisch;
 
     # make an installed version of the package
