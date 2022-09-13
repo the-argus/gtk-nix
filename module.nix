@@ -39,8 +39,7 @@ in {
         cp $src/lib/node_modules/phisch/index.theme $installdir
       '';
     };
-  in
-    lib.mkIf cfg.enable {
-      home.packages = [gtk-nix];
-    };
+  in {
+    home.packages = lib.mkIf cfg.enable [gtk-nix];
+  };
 }
