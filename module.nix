@@ -39,9 +39,9 @@ in {
       installPhase = ''
         installdir=$out/share/themes/GtkNix
         mkdir -p $installdir
-        cp $src/lib/node_modules/phisch/gtk-3.0 $installdir
-        cp $src/lib/node_modules/phisch/assets $installdir
-        cp $src/lib/node_modules/phisch/index.theme $installdir
+        cp -r $src/lib/node_modules/phisch/gtk-3.0 $installdir
+        cp -r $src/lib/node_modules/phisch/assets $installdir
+        cp -r $src/lib/node_modules/phisch/index.theme $installdir
       '';
     };
   in {
