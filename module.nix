@@ -20,6 +20,11 @@ in {
     patchedSource = stdenv.mkDerivation {
       name = "patchedPhisch";
       src = source;
+      dontBuild = true;
+      installPhase = ''
+        mkdir $out
+        cp -r $src/* $out
+      '';
     };
 
     # "build" the package
