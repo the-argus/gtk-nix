@@ -3,7 +3,6 @@
   dreamlib,
 }: {
   pkgs,
-  options,
   config,
   ...
 }: let
