@@ -38,10 +38,5 @@ in {
   in
     mkIf cfg.enable {
       home.packages = [gtk-nix];
-
-      gtk = {
-        enable = true;
-        theme = "GtkNix";
-      };
     };
 }
