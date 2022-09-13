@@ -36,10 +36,9 @@
     homeManagerModule = import ./module.nix {inherit source dreamlib;};
 
     # for debugging only
-    phocusTheme = let
+    checks = let
       dream = dreamlib."x86_64-linux".makeOutputs {inherit source;};
-      gtk-nix = dream.packages.gtk-nix;
     in
-      gtk-nix;
+      dream.packages.phisch;
   };
 }
