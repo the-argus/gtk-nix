@@ -8,7 +8,7 @@
   ...
 }: let
   inherit (pkgs) stdenv lib;
-  inherit (lib) mkOption mkEnableOption;
+  inherit (lib) mkOption mkEnableOption mkIf;
   cfg = config.gtkNix;
 in {
   options.gtkNix = {
