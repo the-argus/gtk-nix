@@ -7,7 +7,7 @@
   ...
 }: let
   inherit (pkgs) stdenv lib;
-  inherit (lib) mkOption mkEnableOption mkIf;
+  inherit (lib) mkOption mkEnableOption;
   cfg = config.gtkNix;
 in {
   options.gtkNix = {
@@ -40,7 +40,7 @@ in {
       '';
     };
   in
-    mkIf cfg.enable {
+    lib.mkIf cfg.enable {
       home.packages = [gtk-nix];
     };
 }
