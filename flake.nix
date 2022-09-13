@@ -5,7 +5,7 @@
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
     source = {
-      url = "github:phocus/gtk";
+      url = "github:phocus/gtk?rev=945ad3940c69222d45a2bd06e0838164002b6690";
       flake = false;
     };
 
