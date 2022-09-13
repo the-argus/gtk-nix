@@ -1,7 +1,12 @@
 {
   source,
   dreamlib,
-}: {pkgs, options, config, ...}: let
+}: {
+  pkgs,
+  options,
+  config,
+  ...
+}: let
   inherit (pkgs) stdenv;
   inherit (lib) mkOption mkEnableOption;
   cfg = config.gtkNix;
