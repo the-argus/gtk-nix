@@ -4,7 +4,10 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
-    source.url = "github:phocus/gtk";
+    source = {
+      url = "github:phocus/gtk";
+      flake = false;
+    };
 
     dream2nix.url = "github:nix-community/dream2nix";
   };
