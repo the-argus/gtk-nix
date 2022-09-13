@@ -40,6 +40,9 @@ in {
       '';
     };
   in {
-    home.packages = lib.mkIf cfg.enable [gtk-nix];
+    gtk.theme = lib.mkIf cfg.enable {
+      package = gtk-nix;
+      name = "GtkNix";
+    };
   };
 }
