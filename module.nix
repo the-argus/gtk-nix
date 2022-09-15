@@ -50,6 +50,14 @@
         weakest = mkBlack "06";
       };
     };
+  mkColorPalette = colors:
+    mkOption {
+      type = types.submodule {
+        options = builtins.mapAttrs mkColor colors;
+      };
+      description = "Highlight colors used rarely. Only colors you \
+      select as accents are used in every application.";
+    };
   palette = types.submodule {
     options = {
       surface = mkOption {
@@ -59,22 +67,42 @@
           lightest (weakest). These make up the majority of the theme.
         '';
       };
-      white = mkOption {
+      whites = mkOption {
         type = whitePalette;
         description = ''
           Bright base colors, usually whites, at different levels of
           transparency.
         '';
       };
-      black = mkOption {
+      blacks = mkOption {
         type = blackPalette;
         description = ''
           Dark base colors, usually blacks, at different levels of
           transparency.
         '';
       };
-      lightColors = mkOption {};
-      normalColors = mkOption {};
+      normalColors = mkColorPalette {
+        red = "DA5858";
+        orange = "ED9454";
+        yellow = "E8CA5E";
+        green = "3FC661";
+        cyan = "5CD8E6";
+        blue = "497EE9";
+        purple = "7154F2";
+        pink = "D56CC3";
+      };
+      lightColors = mkColorPalette {
+        red = "E36D6D";
+        orange = "FCA669";
+        yellow = "FADD75";
+        green = "61D67E";
+        cyan = "7EEAF6";
+        blue = "5D8DEE";
+        purple = "8066F5";
+        pink = "DF81CF";
+      };
+      primaryAccent = mkColor "7154F2";
+      secondaryAccent = mkColor "3FC661";
     };
   };
   cfg = config.gtkNix;
@@ -84,6 +112,67 @@ in {
 
     palette = mkOption {
       type = palette;
+    };
+
+    config = mkOption {
+      type = types.submodule {
+        options = {
+          spacing-small = mkOption {
+            type = types.str;
+            default = "0.3em";
+            description = "CSS spacing value for smaller gaps.";
+          };
+          spacing-medium = mkOption {
+            type = types.str;
+            default = "0.6em";
+            description = "CSS spacing value for medium gaps.";
+          };
+          spacing-large = mkOption {
+            type = types.str;
+            default = "0.9em";
+            description = "CSS spacing value for large gaps.";
+          };
+          tint-weak = mkOption {
+            type = types.float;
+            default = 0.3;
+            description = "Value between 0 and 1 representing the opacity of \
+            *very* transparent elements.";
+          };
+          tint-medium = mkOption {
+            type = types.float;
+            default = 0.6;
+            description = "Value between 0 and 1 representing the opacity of \
+            somewhat transparent elements.";
+          };
+          tint-strong = mkOption {
+            type = types.float;
+            default = 0.8;
+            description = "Value between 0 and 1 representing the opacity of \
+            *slightly* transparent elements.";
+          };
+          border-size = mkOption {
+            type = types.str;
+            default = "0.2em";
+            description = "CSS spacing value for the thickness of borders.";
+          };
+          radius = mkOption {
+            type = types.str;
+            default = "0.5em";
+            description = "CSS spacing value for how round corners should be.";
+          };
+          disabled-opacity = mkOption {
+            type = types.float;
+            default = 0.3;
+            description = "Opacity value from 0 to 1 for disabled UI elements.";
+          };
+        };
+      };
+    };
+
+    extraColorSCSS = mkOption {
+      type = types.lines;
+      default = '''';
+      description = "Additional SCSS to add to _colors.scss";
     };
 
     defaultTransparency = mkOption {
@@ -123,16 +212,80 @@ in {
           "color ${colorStr} is not in valid RGB or RGBA hexadecimal format."
         )
     );
+
+    # function that converts an RGBA hex string to a list of R G B A, 0-255
+    hexToRGBA = hex: let
+      inherit (lib.lists) sublist range reverse;
+      inherit (lib.strings) stringToCharacters toUpper toInt;
+      getChannel = channelNum: sublist (channelNum * 2) 2 (stringToCharacters hex);
+      channels = map getChannel (range 0 3); # RGBA channels 1-4 in a list, still hex
+
+      twoDigitHexToDecimal = twoDigitHex: let
+        hexDigits = stringToCharacters (toUpper twoDigitHex);
+        hexmap = {
+          "A" = 10;
+          "B" = 11;
+          "C" = 12;
+          "D" = 13;
+          "E" = 14;
+          "F" = 15;
+        };
+        oneDigitHexToDecimal = oneDigitHex:
+          if builtins.hasAttr oneDigitHex hexmap
+          then hexmap.${oneDigitHex}
+          else toInt oneDigitHex;
+        decimalDigits = reverse (map oneDigitHexToDecimal hexDigits);
+        # scale each digit to its place (first place is * 1, second
+        # place is * 16)
+        decimalValues = imap0 (index: value:
+          if index == 0
+          then value
+          else if index == 1
+          then (index * 16) * value
+          else abort "twoDigitHexToDecimal can only process a hex string \
+          with length 2.")
+        decimalDigits;
+      in
+        # add all the decimal values of each hex digit
+        lib.lists.foldr (a: b: a + b) 0 decimalValues;
+    in
+      map twoDigitHexToDecimal channels;
+
+    colorSetToSCSS = prefix: set:
+      lib.attrsets.mapAttrsToList (name: value: "\$${prefix}${name}: \
+      rgba(${builtins.concatStringsSep ", " (hexToRGBA value)});") set;
+
+    colorSetToSCSSSuffix = suffix: set:
+      lib.attrsets.mapAttrsToList (name: value: "\$${name}${suffix}: \
+      rgba(${builtins.concatStringsSep ", " (hexToRGBA value)});") set;
+
+    # create _colors.scss and _config.scss
+    colorsScss = builtins.toFile "_colors.scss" ''
+      ${builtins.concatStringsSep "\n" (colorSetToSCSS "surface-" cfg.palette.surface)}
+      ${builtins.concatStringsSep "\n" (colorSetToSCSS "white-" cfg.palette.whites)}
+      ${builtins.concatStringsSep "\n" (colorSetToSCSS "black-" cfg.palette.blacks)}
+
+      ${builtins.concatStringsSep "\n" (colorSetToSCSSSuffix "-normal" cfg.palette.normalColors)}
+      ${builtins.concatStringsSep "\n" (colorSetToSCSSSuffix "-light" cfg.palette.lightColors)}
+
+      $accent-primary: rgba(${builtins.concatStringsSep ", " (hexToRGBA cfg.primaryAccent)});
+      $accent-secondary: rgba(${builtins.concatStringsSep ", " (hexToRGBA cfg.secondaryAccent)});
+
+      @define-color borders #{"" +$surface-strong};
+      ${cfg.extraColorSCSS}
+    '';
+
     # first patch the original source
     patchedSource = stdenv.mkDerivation {
       name = "patchedPhisch";
       src = source;
       dontBuild = true;
       installPhase = ''
-        mkdir $out
+        mkdir -p $out/scss/gtk-3.0
         cp -r $src/* $out
 
         # modify contents of $out, not even using the build directory
+        cp ${colorsScss} $out/scss/gtk-3.0/_colors.scss
       '';
     };
 
