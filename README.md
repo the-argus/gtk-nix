@@ -160,12 +160,14 @@ Example:
     # .name instead of .package
   ];
 }
+```
 ## mkTheme
 This function provides usage without flakes. Pass the set that normally would
 be passed to ``config.gtkNix`` in home-manager to this function to get a set
 containing "package" and "name." The only difference is that the ``enable``
 option does not need to be set to true.
 Example:
+```nix
 { pkgs, gtk-nix, ... }:
 {
   environment.systemPackages = [
@@ -178,3 +180,4 @@ Example:
     }).package)
   ];
 }
+```
