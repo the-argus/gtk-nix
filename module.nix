@@ -118,7 +118,7 @@
         '';
       };
       normalColors = mkColorPalette defaultPalette.normalColors;
-      lightColors = mkColorPalette defaultPalette lightColors;
+      lightColors = mkColorPalette defaultPalette.lightColors;
       primaryAccent = mkColor defaultPalette.primaryAccent;
       secondaryAccent = mkColor defaultPalette.secondaryAccent;
     };
