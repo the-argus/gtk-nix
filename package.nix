@@ -6,7 +6,7 @@
   dontPatch ? false,
   ...
 }: let
-  inherit (pkgs) stdenv;
+  inherit (pkgs) stdenv lib;
 
   # pass every hexadecimal color through this function, fills out alpha
   # channel if it's missing
