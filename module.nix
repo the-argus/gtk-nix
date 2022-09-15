@@ -8,6 +8,17 @@
 }: let
   inherit (pkgs) stdenv lib;
   inherit (lib) mkOption mkEnableOption types;
+  defaultConfiguration = {
+    spacing-small = "0.3em";
+    spacing-medium = "0.6em";
+    spacing-large = "0.9em";
+    tint-weak = 0.3;
+    tint-medium = 0.6;
+    tint-strong = 0.9;
+    border-size = "0.2em";
+    radius = "0.5em";
+    disabled-opacity = 0.3;
+  };
   defaultPalette = {
     surface = {
       strongest = "0A0A0A";
@@ -134,54 +145,55 @@ in {
     };
 
     configuration = mkOption {
+      default = defaultConfiguration;
       type = types.submodule {
         options = {
           spacing-small = mkOption {
             type = types.str;
-            default = "0.3em";
+            default = defaultConfiguration.spacing-small;
             description = "CSS spacing value for smaller gaps.";
           };
           spacing-medium = mkOption {
             type = types.str;
-            default = "0.6em";
+            default = defaultConfiguration.spacing-medium;
             description = "CSS spacing value for medium gaps.";
           };
           spacing-large = mkOption {
             type = types.str;
-            default = "0.9em";
+            default = defaultConfiguration.spacing-large;
             description = "CSS spacing value for large gaps.";
           };
           tint-weak = mkOption {
             type = types.float;
-            default = 0.3;
+            default = defaultConfiguration.tint-weak;
             description = "Value between 0 and 1 representing the opacity of \
             *very* transparent elements.";
           };
           tint-medium = mkOption {
             type = types.float;
-            default = 0.6;
+            default = defaultConfiguration.tint-medium;
             description = "Value between 0 and 1 representing the opacity of \
             somewhat transparent elements.";
           };
           tint-strong = mkOption {
             type = types.float;
-            default = 0.8;
+            default = defaultConfiguration.tint-strong;
             description = "Value between 0 and 1 representing the opacity of \
             *slightly* transparent elements.";
           };
           border-size = mkOption {
             type = types.str;
-            default = "0.2em";
+            default = defaultConfiguration.border-size;
             description = "CSS spacing value for the thickness of borders.";
           };
           radius = mkOption {
             type = types.str;
-            default = "0.5em";
+            default = defaultConfiguration.radius;
             description = "CSS spacing value for how round corners should be.";
           };
           disabled-opacity = mkOption {
             type = types.float;
-            default = 0.3;
+            default = defaultConfiguration.disabled-opacity;
             description = "Opacity value from 0 to 1 for disabled UI elements.";
           };
         };
@@ -266,7 +278,7 @@ in {
       in
         # add all the decimal values of each hex digit
         lib.lists.foldr (a: b: a + b) 0 decimalValues;
-      
+
       # convert to decimal
       decimalChannels = map twoDigitHexToDecimal channels;
     in
@@ -281,6 +293,11 @@ in {
     colorSetToSCSSSuffix = suffix: set:
       lib.attrsets.mapAttrsToList (name: value: "\$${name}${suffix}: \
       rgba(${builtins.concatStringsSep ", " (hexToRGBA value)});") set;
+
+    configSetToSCSS = conf:
+      lib.attrsets.mapAttrsToList
+      (name: value: "\$${name}: ${value};")
+      conf;
 
     # create _colors.scss and _config.scss
     colorsScss = builtins.toFile "_colors.scss" ''
@@ -298,6 +315,10 @@ in {
       ${cfg.extraColorSCSS}
     '';
 
+    configScss =
+      builtins.toFile "_config.scss" (map builtins.concatStringsSep "\n"
+        (configSetToSCSS cfg.configuration));
+
     # first patch the original source
     patchedSource = stdenv.mkDerivation {
       name = "patchedPhisch";
@@ -311,6 +332,7 @@ in {
 
         # modify contents of $out, not even using the build directory
         cp ${colorsScss} $out/scss/gtk-3.0/_colors.scss
+        cp ${configScss} $out/scss/gtk-3.0/_config.scss
       '';
     };
 
