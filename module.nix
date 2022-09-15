@@ -70,7 +70,7 @@
   surfacePalette = types.submodule {
     options =
       builtins.mapAttrs (name: value: mkColor value)
-      defaultPalette.surfacePalette;
+      defaultPalette.surface;
   };
   whitePalette = types.submodule {
     options =
@@ -99,7 +99,7 @@
           Base colors, usually greys, ordered from darkest (strongest) to
           lightest (weakest). These make up the majority of the theme.
         '';
-        default = defaultPalette.surfacePalette;
+        default = defaultPalette.surface;
       };
       whites = mkOption {
         type = whitePalette;
