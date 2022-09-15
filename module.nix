@@ -234,7 +234,7 @@ in {
 
     # function that converts an RGBA hex string to a list of R G B A, 0-255
     hexToRGBA = hex: let
-      inherit (lib.lists) sublist range reverse;
+      inherit (lib.lists) sublist range reverseList;
       inherit (lib.strings) stringToCharacters toUpper toInt;
       getChannel = channelNum: sublist (channelNum * 2) 2 (stringToCharacters (processColor hex));
       channels = map getChannel (range 0 3); # RGBA channels 1-4 in a list, still hex
@@ -253,7 +253,7 @@ in {
           if builtins.hasAttr oneDigitHex hexmap
           then hexmap.${oneDigitHex}
           else toInt oneDigitHex;
-        decimalDigits = reverse (map oneDigitHexToDecimal hexDigits);
+        decimalDigits = reverseList (map oneDigitHexToDecimal hexDigits);
         # scale each digit to its place (first place is * 1, second
         # place is * 16)
         decimalValues = lib.lists.imap0 (index: value:
