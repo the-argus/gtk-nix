@@ -38,10 +38,14 @@
   in {
     homeManagerModule = import ./module.nix {inherit source dreamlib;};
 
-    # for debugging only
-    checks = let
-      dream = dreamlib."x86_64-linux".makeOutputs {inherit source;};
-    in
-      dream.packages.phisch;
+    packages =
+      genSystems
+      (system: let
+        pkgs = import nixpkgs {localSystem = {inherit system;};};
+      in (pkgs.callPackage ./package.nix {
+        inherit source dreamlib pkgs;
+        cfg = import ./defaults.nix;
+      }))
+      .package;
   };
 }
