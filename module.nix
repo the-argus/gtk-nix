@@ -286,8 +286,8 @@ in {
       ${builtins.concatStringsSep "\n" (colorSetToSCSSSuffix "-normal" cfg.palette.normalColors)}
       ${builtins.concatStringsSep "\n" (colorSetToSCSSSuffix "-light" cfg.palette.lightColors)}
 
-      $accent-primary: rgba(${builtins.concatStringsSep ", " (hexToRGBA cfg.primaryAccent)});
-      $accent-secondary: rgba(${builtins.concatStringsSep ", " (hexToRGBA cfg.secondaryAccent)});
+      $accent-primary: rgba(${builtins.concatStringsSep ", " (hexToRGBA cfg.palette.primaryAccent)});
+      $accent-secondary: rgba(${builtins.concatStringsSep ", " (hexToRGBA cfg.palette.secondaryAccent)});
 
       @define-color borders #{"" +$surface-strong};
       ${cfg.extraColorSCSS}
