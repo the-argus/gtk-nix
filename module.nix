@@ -112,6 +112,7 @@ in {
 
     palette = mkOption {
       type = palette;
+      default = {};
     };
 
     config = mkOption {
