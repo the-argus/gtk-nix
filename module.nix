@@ -18,7 +18,7 @@
     };
     whites = let
       # white colors all default to pure white
-      mkWhite = alpha: mkColor "FFFFFF${alpha}";
+      mkWhite = alpha: "FFFFFF${alpha}";
     in {
       strongest = mkWhite "FF";
       strong = mkWhite "57";
@@ -28,7 +28,7 @@
     };
     blacks = let
       # white colors all default to pure white
-      mkBlack = alpha: mkColor "000000${alpha}";
+      mkBlack = alpha: "000000${alpha}";
     in {
       strongest = mkBlack "FF";
       strong = mkBlack "57";
