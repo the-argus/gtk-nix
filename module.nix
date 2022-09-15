@@ -61,7 +61,7 @@
   palette = types.submodule {
     options = {
       surface = mkOption {
-        type = types.surfacePalette;
+        type = surfacePalette;
         description = ''
           Base colors, usually greys, ordered from darkest (strongest) to
           lightest (weakest). These make up the majority of the theme.
