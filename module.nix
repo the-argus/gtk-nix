@@ -240,7 +240,6 @@ in {
       channels = map getChannel (range 0 3); # RGBA channels 1-4 in a list, still hex
 
       twoDigitHexToDecimal = twoDigitHex: let
-        hexDigits = stringToCharacters twoDigitHex;
         hexmap = {
           "A" = 10;
           "B" = 11;
@@ -253,7 +252,7 @@ in {
           if builtins.hasAttr oneDigitHex hexmap
           then hexmap.${oneDigitHex}
           else toInt oneDigitHex;
-        decimalDigits = reverseList (map oneDigitHexToDecimal hexDigits);
+        decimalDigits = reverseList (map oneDigitHexToDecimal twoDigitHex);
         # scale each digit to its place (first place is * 1, second
         # place is * 16)
         decimalValues = lib.lists.imap0 (index: value:
