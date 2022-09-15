@@ -47,5 +47,17 @@
         cfg = import ./defaults.nix;
         dontPatch = true;
       }));
+
+    mkTheme = cfg: (genSystems
+      (
+        system: let
+          override = pkgs.lib.attrsets.recursiveUpdate;
+          pkgs = import nixpkgs {localSystem = {inherit system;};};
+        in
+          pkgs.callPackage ./package.nix {
+            inherit source dreamlib pkgs;
+            cfg = override (import ./defaults.nix) cfg;
+          }
+      ));
   };
 }

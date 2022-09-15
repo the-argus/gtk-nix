@@ -144,10 +144,10 @@ It uses the default values for all of them.
 ```
 
 # Flake Outputs and Phocus Packaging
-# homeManagerModule
+## homeManagerModule
 Documented above.
 
-# packages
+## phocusGtk
 This flake provides packaging for phocus-gtk, which can also be applied
 to the system by just doing ``gtkNix.enable = true;`` and leaving everything
 else at default.
@@ -158,5 +158,23 @@ Example:
   environment.systemPackages = [
     (gtk-nix.phocusGtk.${pkgs.system}.package) # and the name of the theme is
     # .name instead of .package
+  ];
+}
+## mkTheme
+This function provides usage without flakes. Pass the set that normally would
+be passed to ``config.gtkNix`` in home-manager to this function to get a set
+containing "package" and "name." The only difference is that the ``enable``
+option does not need to be set to true.
+Example:
+{ pkgs, gtk-nix, ... }:
+{
+  environment.systemPackages = [
+    (gtk-nix.mkTheme.${pkgs.system} {
+      palette = {
+        # please don't actually use this config... it looks awful
+        primaryAccent = "FF0000";
+        secondaryAccent = "00FF00";
+      };
+    }).package)
   ];
 }
