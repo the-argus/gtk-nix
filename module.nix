@@ -8,6 +8,57 @@
 }: let
   inherit (pkgs) stdenv lib;
   inherit (lib) mkOption mkEnableOption types;
+  defaultPalette = {
+    surfacePalette = {
+      strongest = "0A0A0A";
+      strong = "141414";
+      moderate = "1C1C1C";
+      weak = "222222";
+      weakest = "282828";
+    };
+    whites = let
+      # white colors all default to pure white
+      mkWhite = alpha: mkColor "FFFFFF${alpha}";
+    in {
+      strongest = mkWhite "FF";
+      strong = mkWhite "57";
+      moderate = mkWhite "22";
+      weak = mkWhite "0E";
+      weakest = mkWhite "06";
+    };
+    blacks = let
+      # white colors all default to pure white
+      mkBlack = alpha: mkColor "000000${alpha}";
+    in {
+      strongest = mkBlack "FF";
+      strong = mkBlack "57";
+      moderate = mkBlack "2A";
+      weak = mkBlack "0F";
+      weakest = mkBlack "06";
+    };
+    normalColors = {
+      red = "DA5858";
+      orange = "ED9454";
+      yellow = "E8CA5E";
+      green = "3FC661";
+      cyan = "5CD8E6";
+      blue = "497EE9";
+      purple = "7154F2";
+      pink = "D56CC3";
+    };
+    lightColors = {
+      red = "E36D6D";
+      orange = "FCA669";
+      yellow = "FADD75";
+      green = "61D67E";
+      cyan = "7EEAF6";
+      blue = "5D8DEE";
+      purple = "8066F5";
+      pink = "DF81CF";
+    };
+    primaryAccent = "7154F2";
+    secondaryAccent = "3FC661";
+  };
   mkColor = default: (mkOption {
     type = types.str;
     description = ''
@@ -15,48 +66,33 @@
     '';
     inherit default;
   });
+
   surfacePalette = types.submodule {
-    options = {
-      strongest = mkColor "0A0A0A";
-      strong = mkColor "141414";
-      moderate = mkColor "1C1C1C";
-      weak = mkColor "222222";
-      weakest = mkColor "282828";
-    };
+    options =
+      builtins.mapAttrs (name: value: mkColor value)
+      defaultPalette.surfacePalette;
+    default = defaultPalette.surfacePalette;
   };
-  whitePalette = let
-    # white colors all default to pure white
-    mkWhite = alpha: mkColor "FFFFFF${alpha}";
-  in
-    types.submodule {
-      options = {
-        strongest = mkWhite "FF";
-        strong = mkWhite "57";
-        moderate = mkWhite "22";
-        weak = mkWhite "0E";
-        weakest = mkWhite "06";
-      };
-    };
-  blackPalette = let
-    # white colors all default to pure white
-    mkBlack = alpha: mkColor "000000${alpha}";
-  in
-    types.submodule {
-      options = {
-        strongest = mkBlack "FF";
-        strong = mkBlack "57";
-        moderate = mkBlack "2A";
-        weak = mkBlack "0F";
-        weakest = mkBlack "06";
-      };
-    };
+  whitePalette = types.submodule {
+    options =
+      builtins.mapAttrs (name: value: mkColor value)
+      defaultPalette.whites;
+    default = defaultPalette.whites;
+  };
+  blackPalette = types.submodule {
+    options =
+      builtins.mapAttrs (name: value: mkColor value)
+      defaultPalette.blacks;
+    default = defaultPalette.blacks;
+  };
   mkColorPalette = colors:
     mkOption {
       type = types.submodule {
-        options = builtins.mapAttrs mkColor colors;
+        options = builtins.mapAttrs (name: color: mkColor color) colors;
       };
       description = "Highlight colors used rarely. Only colors you \
       select as accents are used in every application.";
+      default = colors;
     };
   palette = types.submodule {
     options = {
@@ -81,28 +117,10 @@
           transparency.
         '';
       };
-      normalColors = mkColorPalette {
-        red = "DA5858";
-        orange = "ED9454";
-        yellow = "E8CA5E";
-        green = "3FC661";
-        cyan = "5CD8E6";
-        blue = "497EE9";
-        purple = "7154F2";
-        pink = "D56CC3";
-      };
-      lightColors = mkColorPalette {
-        red = "E36D6D";
-        orange = "FCA669";
-        yellow = "FADD75";
-        green = "61D67E";
-        cyan = "7EEAF6";
-        blue = "5D8DEE";
-        purple = "8066F5";
-        pink = "DF81CF";
-      };
-      primaryAccent = mkColor "7154F2";
-      secondaryAccent = mkColor "3FC661";
+      normalColors = mkColorPalette defaultPalette.normalColors;
+      lightColors = mkColorPalette defaultPalette lightColors;
+      primaryAccent = mkColor defaultPalette.primaryAccent;
+      secondaryAccent = mkColor defaultPalette.secondaryAccent;
     };
   };
   cfg = config.gtkNix;
@@ -112,7 +130,7 @@ in {
 
     palette = mkOption {
       type = palette;
-      default = {};
+      default = defaultPalette;
     };
 
     config = mkOption {
@@ -218,7 +236,7 @@ in {
     hexToRGBA = hex: let
       inherit (lib.lists) sublist range reverse;
       inherit (lib.strings) stringToCharacters toUpper toInt;
-      getChannel = channelNum: sublist (channelNum * 2) 2 (stringToCharacters hex);
+      getChannel = channelNum: sublist (channelNum * 2) 2 (stringToCharacters (processColor hex));
       channels = map getChannel (range 0 3); # RGBA channels 1-4 in a list, still hex
 
       twoDigitHexToDecimal = twoDigitHex: let
