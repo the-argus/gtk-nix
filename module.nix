@@ -206,10 +206,17 @@ in {
       description = "Additional SCSS to add to _colors.scss";
     };
 
+    extraConfigSCSS = mkOption {
+      type = types.lines;
+      default = '''';
+      description = "Additional SCSS to add to _config.scss. Pretty useless.";
+    };
+
     defaultTransparency = mkOption {
       type = types.int;
       default = 255;
-      description = "A number in range 0-255 inclusive.";
+      description = "A number in range 0-255 inclusive. Applied to all colors \
+      that don't already have an alpha channel.";
     };
   };
 
@@ -330,9 +337,11 @@ in {
       ${cfg.extraColorSCSS}
     '';
 
-    configScss =
-      builtins.toFile "_config.scss" (builtins.concatStringsSep "\n"
-        (configSetToSCSS cfg.configuration));
+    configScss = builtins.toFile "_config.scss" (
+      (builtins.concatStringsSep "\n"
+        (configSetToSCSS cfg.configuration))
+      + "\n${cfg.extraConfigSCSS}"
+    );
 
     # first patch the original source
     patchedSource = stdenv.mkDerivation {
