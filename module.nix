@@ -9,7 +9,7 @@
   inherit (pkgs) stdenv lib;
   inherit (lib) mkOption mkEnableOption types;
   defaultPalette = {
-    surfacePalette = {
+    surface = {
       strongest = "0A0A0A";
       strong = "141414";
       moderate = "1C1C1C";
