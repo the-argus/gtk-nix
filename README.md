@@ -177,7 +177,7 @@ Example:
         primaryAccent = "FF0000";
         secondaryAccent = "00FF00";
       };
-    }).package)
+    }).package
   ];
 }
 ```
