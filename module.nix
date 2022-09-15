@@ -21,20 +21,20 @@
       mkWhite = alpha: "FFFFFF${alpha}";
     in {
       strongest = mkWhite "FF";
-      strong = mkWhite "57";
-      moderate = mkWhite "22";
-      weak = mkWhite "0E";
-      weakest = mkWhite "06";
+      strong = mkWhite "DE";
+      moderate = mkWhite "57";
+      weak = mkWhite "24";
+      weakest = mkWhite "0F";
     };
     blacks = let
       # white colors all default to pure white
       mkBlack = alpha: "000000${alpha}";
     in {
       strongest = mkBlack "FF";
-      strong = mkBlack "57";
-      moderate = mkBlack "2A";
-      weak = mkBlack "0F";
-      weakest = mkBlack "06";
+      strong = mkBlack "DE";
+      moderate = mkBlack "6B";
+      weak = mkBlack "26";
+      weakest = mkBlack "0F";
     };
     normalColors = {
       red = "DA5858";
