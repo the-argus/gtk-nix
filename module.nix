@@ -102,6 +102,7 @@
           Base colors, usually greys, ordered from darkest (strongest) to
           lightest (weakest). These make up the majority of the theme.
         '';
+        default = defaultPalette.surfacePalette;
       };
       whites = mkOption {
         type = whitePalette;
@@ -109,6 +110,7 @@
           Bright base colors, usually whites, at different levels of
           transparency.
         '';
+        default = defaultPalette.whites;
       };
       blacks = mkOption {
         type = blackPalette;
@@ -116,6 +118,7 @@
           Dark base colors, usually blacks, at different levels of
           transparency.
         '';
+        default = defaultPalette.blacks;
       };
       normalColors = mkColorPalette defaultPalette.normalColors;
       lightColors = mkColorPalette defaultPalette.lightColors;
