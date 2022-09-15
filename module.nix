@@ -266,8 +266,13 @@ in {
       in
         # add all the decimal values of each hex digit
         lib.lists.foldr (a: b: a + b) 0 decimalValues;
+      
+      # convert to decimal
+      decimalChannels = map twoDigitHexToDecimal channels;
     in
-      map builtins.toString (map twoDigitHexToDecimal channels);
+      # divide the last element by 255 so its a float in 1
+      map builtins.toString ((sublist 0 3 decimalChannels)
+        ++ (map (item: (item / 255.0)) sublist 3 1 decimalChannels));
 
     colorSetToSCSS = prefix: set:
       lib.attrsets.mapAttrsToList (name: value: "\$${prefix}${name}: \
