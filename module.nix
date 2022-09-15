@@ -71,19 +71,16 @@
     options =
       builtins.mapAttrs (name: value: mkColor value)
       defaultPalette.surfacePalette;
-    default = defaultPalette.surfacePalette;
   };
   whitePalette = types.submodule {
     options =
       builtins.mapAttrs (name: value: mkColor value)
       defaultPalette.whites;
-    default = defaultPalette.whites;
   };
   blackPalette = types.submodule {
     options =
       builtins.mapAttrs (name: value: mkColor value)
       defaultPalette.blacks;
-    default = defaultPalette.blacks;
   };
   mkColorPalette = colors:
     mkOption {
@@ -136,7 +133,7 @@ in {
       default = defaultPalette;
     };
 
-    config = mkOption {
+    configuration = mkOption {
       type = types.submodule {
         options = {
           spacing-small = mkOption {
