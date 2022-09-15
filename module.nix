@@ -272,7 +272,7 @@ in {
     in
       # divide the last element by 255 so its a float in 1
       map builtins.toString ((sublist 0 3 decimalChannels)
-        ++ (map (item: (item / 255.0)) sublist 3 1 decimalChannels));
+        ++ (map (item: (item / 255.0)) (sublist 3 1 decimalChannels)));
 
     colorSetToSCSS = prefix: set:
       lib.attrsets.mapAttrsToList (name: value: "\$${prefix}${name}: \
