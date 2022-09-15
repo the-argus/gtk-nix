@@ -316,8 +316,8 @@ in {
     '';
 
     configScss =
-      builtins.toFile "_config.scss" (map builtins.concatStringsSep "\n"
-        (builtins.trace (configSetToSCSS cfg.configuration) (configSetToSCSS cfg.configuration)));
+      builtins.toFile "_config.scss" (builtins.concatStringsSep "\n"
+        (configSetToSCSS cfg.configuration));
 
     # first patch the original source
     patchedSource = stdenv.mkDerivation {
