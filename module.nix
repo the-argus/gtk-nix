@@ -236,11 +236,11 @@ in {
     hexToRGBA = hex: let
       inherit (lib.lists) sublist range reverseList;
       inherit (lib.strings) stringToCharacters toUpper toInt;
-      getChannel = channelNum: sublist (channelNum * 2) 2 (stringToCharacters (processColor hex));
+      getChannel = channelNum: sublist (channelNum * 2) 2 (stringToCharacters (processColor (toUpper hex)));
       channels = map getChannel (range 0 3); # RGBA channels 1-4 in a list, still hex
 
       twoDigitHexToDecimal = twoDigitHex: let
-        hexDigits = stringToCharacters (toUpper twoDigitHex);
+        hexDigits = stringToCharacters twoDigitHex;
         hexmap = {
           "A" = 10;
           "B" = 11;
