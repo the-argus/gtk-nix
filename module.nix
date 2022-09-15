@@ -287,16 +287,31 @@ in {
         ++ (map (item: (item / 255.0)) (sublist 3 1 decimalChannels)));
 
     colorSetToSCSS = prefix: set:
-      lib.attrsets.mapAttrsToList (name: value: "\$${prefix}${name}: \
-      rgba(${builtins.concatStringsSep ", " (hexToRGBA value)});") set;
+      lib.attrsets.mapAttrsToList (
+        name: value: "\$${prefix}${name}: rgba(${builtins.concatStringsSep ", " (hexToRGBA value)});"
+      )
+      set;
 
     colorSetToSCSSSuffix = suffix: set:
-      lib.attrsets.mapAttrsToList (name: value: "\$${name}${suffix}: \
-      rgba(${builtins.concatStringsSep ", " (hexToRGBA value)});") set;
+      lib.attrsets.mapAttrsToList (
+        name: value: "\$${name}${suffix}: rgba(${builtins.concatStringsSep ", " (hexToRGBA value)});"
+      )
+      set;
 
-    configSetToSCSS = conf:
+    configSetToSCSS = conf: let
+      toS = cfgVal: let
+        type = builtins.typeOf cfgVal;
+      in
+        if type == "float"
+        then builtins.toString cfgVal
+        else if type == "string"
+        then cfgVal
+        else abort "I only set up configuration values to be either \
+        floats or strings... open an issue if I forgot to expand this.\
+        But otherwise you should never get this error.";
+    in
       lib.attrsets.mapAttrsToList
-      (name: value: "\$${name}: ${value};")
+      (name: value: "\$${name}: ${toS value};")
       conf;
 
     # create _colors.scss and _config.scss
