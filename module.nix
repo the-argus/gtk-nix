@@ -267,7 +267,7 @@ in {
         # add all the decimal values of each hex digit
         lib.lists.foldr (a: b: a + b) 0 decimalValues;
     in
-      map twoDigitHexToDecimal channels;
+      map builtins.toString (map twoDigitHexToDecimal channels);
 
     colorSetToSCSS = prefix: set:
       lib.attrsets.mapAttrsToList (name: value: "\$${prefix}${name}: \
