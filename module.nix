@@ -237,7 +237,7 @@ in {
         decimalDigits = reverse (map oneDigitHexToDecimal hexDigits);
         # scale each digit to its place (first place is * 1, second
         # place is * 16)
-        decimalValues = imap0 (index: value:
+        decimalValues = lib.lists.imap0 (index: value:
           if index == 0
           then value
           else if index == 1
