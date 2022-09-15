@@ -302,6 +302,8 @@ in {
         mkdir -p $out/scss/gtk-3.0
         cp -r $src/* $out
 
+        ${pkgs.coreutils-full}/bin/chmod -R +w $out
+
         # modify contents of $out, not even using the build directory
         cp ${colorsScss} $out/scss/gtk-3.0/_colors.scss
       '';
