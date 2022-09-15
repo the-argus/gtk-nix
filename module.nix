@@ -162,7 +162,7 @@ in {
   };
 
   config = let
-    gtk-nix-theme = pkgs.callPackage ./package.nix {inherit cfg source dreamlib;};
+    gtk-nix-theme = import ./package.nix {inherit pkgs cfg source dreamlib;};
   in {
     gtk.theme = lib.mkIf cfg.enable gtk-nix-theme;
   };

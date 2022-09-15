@@ -42,7 +42,7 @@
       genSystems
       (system: let
         pkgs = import nixpkgs {localSystem = {inherit system;};};
-      in (pkgs.callPackage ./package.nix {
+      in (import ./package.nix {
         inherit source dreamlib pkgs;
         cfg = import ./defaults.nix;
         dontPatch = true;
@@ -54,7 +54,7 @@
           override = pkgs.lib.attrsets.recursiveUpdate;
           pkgs = import nixpkgs {localSystem = {inherit system;};};
         in
-          pkgs.callPackage ./package.nix {
+          import ./package.nix {
             inherit source dreamlib pkgs;
             cfg = override (import ./defaults.nix) cfg;
           }
