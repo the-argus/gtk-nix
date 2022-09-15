@@ -38,14 +38,14 @@
   in {
     homeManagerModule = import ./module.nix {inherit source dreamlib;};
 
-    packages =
+    phocusGtk =
       genSystems
       (system: let
         pkgs = import nixpkgs {localSystem = {inherit system;};};
       in (pkgs.callPackage ./package.nix {
         inherit source dreamlib pkgs;
         cfg = import ./defaults.nix;
-      }))
-      .package;
+        dontPatch = true;
+      }));
   };
 }

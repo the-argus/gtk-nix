@@ -3,6 +3,7 @@
   source,
   dreamlib,
   cfg,
+  dontPatch ? false,
   ...
 }: let
   inherit (pkgs) stdenv;
@@ -145,23 +146,37 @@
   };
 
   # "build" the package
-  dream = dreamlib.${pkgs.system}.makeOutputs {source = patchedSource;};
-  patchedPhisch = dream.packages.phisch;
+  patchedDream = dreamlib.${pkgs.system}.makeOutputs {source = patchedSource;};
+  dream = dreamlib.${pkgs.system}.makeOutputs {inherit source;};
+
+  patchedPhisch = patchedDream.packages.phisch;
+  phisch = dream.package.phisch;
 
   # make an installed version of the package
-  gtk-nix = stdenv.mkDerivation {
-    name = "gtkNixTheme";
-    src = patchedPhisch;
-    dontBuild = true; # this is just a meta package for installation
-    installPhase = ''
-      installdir=$out/share/themes/GtkNix
-      mkdir -p $installdir
-      cp -r $src/lib/node_modules/phisch/gtk-3.0 $installdir
-      cp -r $src/lib/node_modules/phisch/assets $installdir
-      cp -r $src/lib/node_modules/phisch/index.theme $installdir
-    '';
-  };
-in {
-  package = gtk-nix;
-  name = "GtkNix";
-}
+  mkGtkNix = src: outname:
+    stdenv.mkDerivation {
+      name = "gtkNixTheme";
+      inherit src;
+      dontBuild = true; # this is just a meta package for installation
+      installPhase = ''
+        installdir=$out/share/themes/${outname}
+        mkdir -p $installdir
+        cp -r $src/lib/node_modules/phisch/gtk-3.0 $installdir
+        cp -r $src/lib/node_modules/phisch/assets $installdir
+        cp -r $src/lib/node_modules/phisch/index.theme $installdir
+      '';
+    };
+  themeName = "GtkNix";
+in
+  if dontPatch
+  then
+    (let
+      unpatchedName = "PhocusGtk";
+    in {
+      package = mkGtkNix phisch unpatchedName;
+      name = unpatchedName;
+    })
+  else {
+    package = mkGtkNix patchedPhisch themeName;
+    name = themeName;
+  }
