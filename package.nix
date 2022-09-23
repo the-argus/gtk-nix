@@ -133,6 +133,12 @@
     name = "patchedPhisch";
     src = source;
     dontBuild = true;
+    dontPatch = false;
+    patches =
+      [
+        ./patches/better-chromium-colors.patch
+      ]
+      ++ cfg.additionalPatches;
     installPhase = ''
       mkdir -p $out/scss/gtk-3.0
       cp -r $src/* $out

@@ -159,6 +159,12 @@ in {
       description = "A number in range 0-255 inclusive. Applied to all colors \
       that don't already have an alpha channel.";
     };
+
+    additionalPatches = mkOption {
+      type = types.listOf types.path;
+      default = [];
+      description = "A list of patches to apply to the Phocus GTK source code.";
+    };
   };
 
   config = let

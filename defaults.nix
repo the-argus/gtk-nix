@@ -64,4 +64,5 @@
   extraColorSCSS = '''';
   extraConfigSCSS = '''';
   defaultTransparency = 255;
+  additionalPatches = [];
 }

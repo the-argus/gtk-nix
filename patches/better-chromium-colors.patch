@@ -1,0 +1,39 @@
+ scss/gtk-3.0/applications/_chromium.scss | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/scss/gtk-3.0/applications/_chromium.scss b/scss/gtk-3.0/applications/_chromium.scss
+index 85da9fb..c9c37b4 100644
+--- a/scss/gtk-3.0/applications/_chromium.scss
++++ b/scss/gtk-3.0/applications/_chromium.scss
+@@ -7,7 +7,7 @@
+ window.background.chromium {
+   // active tab and toolbar colors
+   background: lighten(colors.$surface-weak, 2%);
+-  color: colors.$white-strong;
++  color: colors.$white-strongest;
+ 
+   button {
+     border: 1px solid lighten(colors.$surface-weak, 2%);
+@@ -41,10 +41,10 @@ window.background.chromium {
+ 
+   // tab bar / headerbar
+   headerbar, menubar {
+-    background: colors.$surface-strongest;
++    background: colors.$surface-strong;
+ 
+     label {
+-      color: colors.$white-moderate;
++      color: colors.$white-strong;
+     }
+ 
+     // this is a workaround to position titlebuttons to the very right
+@@ -75,4 +75,4 @@ window.background.chromium {
+     background-color: colors.$surface-strong;
+     color: colors.$white-strong;
+   }
+-}
+\ No newline at end of file
++}
+-- 
+2.36.2
+
