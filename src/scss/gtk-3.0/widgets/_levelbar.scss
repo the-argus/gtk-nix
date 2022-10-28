@@ -1,0 +1,19 @@
+@use '../colors';
+
+levelbar {
+  trough {
+    block {
+      padding: 3px;
+      border-radius: 3px;
+
+      &.filled { background: colors.$hialt0; }
+      &.empty { background: colors.$base02; }
+    }
+  }
+
+  &.discrete {
+    block:not(:first-child) {
+      margin-left: 5px;
+    }
+  }
+}

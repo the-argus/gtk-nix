@@ -4,23 +4,18 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
-    source = {
-      url = "github:phocus/gtk?rev=945ad3940c69222d45a2bd06e0838164002b6690";
-      flake = false;
-    };
-
     dream2nix = {
       url = "github:nix-community/dream2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
   outputs = {
-    self,
     nixpkgs,
-    source,
     dream2nix,
     ...
-  } @ inputs: let
+  }: let
+    source = ./src;
+
     supportedSystems = [
       "aarch64-linux"
       "x86_64-linux"

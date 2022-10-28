@@ -1,0 +1,22 @@
+@use 'sass:color';
+@use '../colors';
+@use '../config';
+
+infobar {
+  color: colors.$white-strong;
+  padding: config.$spacing-small;
+  background: colors.$base01;
+
+  &.info {
+    background: color.change(colors.$highlight, $alpha: config.$tint-medium);
+  }
+  &.warning {
+    background: color.change(colors.$warn, $alpha: config.$tint-medium);
+  }
+  &.error {
+    background: color.change(colors.$urgent, $alpha: config.$tint-medium);
+  }
+  &.question {
+    background: color.change(colors.$highlight, $alpha: config.$tint-medium);
+  }
+}

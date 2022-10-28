@@ -1,0 +1,18 @@
+@use '../colors';
+@use '../config';
+
+list {
+  background: colors.$base00;
+
+  row {
+    background: colors.$base01;
+    padding: config.$spacing-medium;
+    &:hover {
+      background: colors.$base02;
+    }
+  }
+
+  > label {
+    padding: config.$spacing-small;
+  }
+}

@@ -1,0 +1,33 @@
+@use "sass:color";
+@use "../colors";
+@use "../config";
+
+.nemo-window {
+  .nemo-places-sidebar {
+    background: colors.$base01;
+  }
+
+  .primary-toolbar {
+    background: colors.$base02;
+    padding: config.$spacing-small;
+  }
+
+  menubar ~ separator {
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .toolbar {
+    background: colors.$base02;
+    margin: -0.1em;
+  }
+
+  .nemo-window-pane {
+    :selected {
+      background: color.change(colors.$highlight, $alpha: config.$tint-medium);
+    }
+    :active {
+      background: color.change(colors.$highlight, $alpha: config.$tint-medium);
+    }
+  }
+}

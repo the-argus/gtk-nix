@@ -1,0 +1,12 @@
+@use '../colors';
+
+iconview {
+  background: colors.$base02;
+  padding: 0.3em;
+
+  &:selected {
+    color: colors.$white-strongest;
+    background: colors.$highlight;
+    border-radius: 0.5em;
+  }
+}

@@ -1,16 +1,23 @@
 # gtk-nix
+
 A flat gtk theme whose colors can be configured with nix. This flake
 provides a home manager module which defines ``config.gtk.theme``.
+It is recommended to use [banner](https://github.com/the-argus/banner)
+color palettes with this gtk theme. A banner yaml file will be read
+and applied to the theme.
 
-# Credits
+## Credits
+
 This is packaging for Phocus Gtk, an excellent gtk theme. The packaging just
 patches Phocus to have different properties. This is only possible thanks to
 Phocus Gtk's great code structure and use of SCSS.
 
-# Usage
+## Usage
+
 Import this flake. If your configuration is in a flake, add this to
 ``flake.nix`` (assuming you already use home-manager. if you don't,
 go to their README):
+
 ```nix
 {
   inputs = {
@@ -36,15 +43,20 @@ go to their README):
   };
 }
 ```
+
 This will add ``gtk-nix`` as an available input to any .nix module file
 imported to home-manager.
 
-# Example Usage
+## Example Usage
+
 I'm not providing full documentation for every option since I didn't make
 phocus gtk and don't know the specifics what options affect. It varies between
 different GTK programs.
-## Minimal Configuration
+
+### Minimal Configuration
+
 An example for a user who just wants a slightly modified version of phocus gtk.
+
 ```nix
 { gtk-nix, ... }:
 {
@@ -60,9 +72,12 @@ An example for a user who just wants a slightly modified version of phocus gtk.
   };
 }
 ```
-## Maximimalist Configuration
+
+### Maximimalist Configuration
+
 This demonstrates *all* the configuration options available.
 It uses the default values for all of them.
+
 ```nix
 { gtk-nix, ... }:
 {
@@ -143,15 +158,19 @@ It uses the default values for all of them.
 }
 ```
 
-# Flake Outputs and Phocus Packaging
-## homeManagerModule
+## Flake Outputs and Phocus Packaging
+
+### homeManagerModule
+
 Documented above.
 
-## phocusGtk
+### phocusGtk
+
 This flake provides packaging for phocus-gtk, which can also be applied
 to the system by just doing ``gtkNix.enable = true;`` and leaving everything
 else at default.
 Example:
+
 ```nix
 { pkgs, gtk-nix, ... }:
 {
@@ -161,12 +180,15 @@ Example:
   ];
 }
 ```
+
 ## mkTheme
+
 This function provides usage without flakes. Pass the set that normally would
 be passed to ``config.gtkNix`` in home-manager to this function to get a set
 containing "package" and "name." The only difference is that the ``enable``
 option does not need to be set to true.
 Example:
+
 ```nix
 { pkgs, gtk-nix, ... }:
 {

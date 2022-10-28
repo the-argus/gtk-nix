@@ -1,0 +1,18 @@
+@use '../colors';
+@use '../config';
+
+menubar {
+  background: colors.$base00;
+
+  menuitem {
+    padding: config.$spacing-medium;
+
+    &:hover {
+      background: colors.$white-weakest;
+    }
+
+    check, radio {
+      margin-right: config.$spacing-medium;
+    }
+  }
+}
