@@ -36,7 +36,7 @@ in {
 
     palette = mkOption {
       type = types.oneOf [
-        banner.types.banner
+        banner.lib.types.banner
         types.path
       ];
       default = defaults.palette;
