@@ -1,7 +1,7 @@
 {
   source,
   dreamlib,
-  gtk-banner,
+  banner,
 }: {
   pkgs,
   config,
@@ -36,7 +36,7 @@ in {
 
     palette = mkOption {
       type = types.oneOf [
-        gtk-banner.lib.types.banner
+        banner.lib.types.banner
         types.path
       ];
       default = defaults.palette;
@@ -145,8 +145,8 @@ in {
         cfg
         source
         dreamlib
+        banner
         ;
-      banner = gtk-banner;
     };
   in {
     gtk.theme = lib.mkIf cfg.enable gtk-nix-theme;

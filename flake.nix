@@ -38,10 +38,7 @@
       });
     pkgs = genSystems (system: import nixpkgs {localSystem = {inherit system;};});
   in {
-    homeManagerModule = import ./module.nix {
-      inherit source dreamlib;
-      gtk-banner = banner;
-    };
+    homeManagerModule = import ./module.nix {inherit source banner dreamlib;};
 
     packages = genSystems (
       system: rec {
