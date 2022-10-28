@@ -41,12 +41,14 @@
     homeManagerModule = import ./module.nix {inherit source banner dreamlib;};
 
     packages = genSystems (
-      system:
-        import ./package.nix {
+      system: rec {
+        gtkNix = import ./package.nix {
           inherit source dreamlib banner;
           pkgs = pkgs.${system};
           cfg = import ./defaults.nix;
-        }
+        };
+        default = gtkNix;
+      }
     );
 
     mkTheme = cfg: (genSystems
