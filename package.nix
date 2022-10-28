@@ -106,8 +106,7 @@
     (name: value: "\$${name}: ${toS value};")
     conf;
 
-  bannerPalette =
-    builtins.mapAttrs (_: value:
+  bannerPalette = banner.lib.util.removeMeta (builtins.mapAttrs (_: value:
       if banner.lib.color.hasOctothorpe value
       then banner.lib.color.removeLeadingOctothorpe value
       else value)
@@ -117,7 +116,7 @@
       else if builtins.typeOf cfg.palette == "path"
       then banner.lib.parsers.basicYamlToBanner cfg.palette
       else abort "Palette must be a banner pallete (see github:the-argus/banner.nix/lib/types.nix) or a path to a banner yaml file. Type ${builtins.typeOf cfg.palette} is not supported."
-    );
+    ));
 
   whites =
     if cfg.whites == null
