@@ -116,9 +116,7 @@
       then cfg.palette
       else if builtins.typeOf cfg.palette == "path"
       then banner.lib.parsers.basicYamlToBanner cfg.palette
-      else abort "Palette must be a banner pallete \
-(see github:the-argus/banner.nix/lib/types.nix) or \
-a path to a banner yaml file."
+      else abort "Palette must be a banner pallete (see github:the-argus/banner.nix/lib/types.nix) or a path to a banner yaml file. Type ${builtins.typeOf cfg.palette} is not supported."
     );
 
   whites =
