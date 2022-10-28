@@ -13,6 +13,9 @@
 
   palette = ./nord.yaml;
 
+  whites = null;
+  blacks = null;
+
   extraColorSCSS = '''';
   extraConfigSCSS = '''';
   defaultTransparency = 255;
