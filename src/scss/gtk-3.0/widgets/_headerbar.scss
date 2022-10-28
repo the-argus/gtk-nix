@@ -16,7 +16,7 @@ headerbar {
     &.close {
       color: colors.$urgent;
       &:hover {
-        color: colors.$red-light;
+        color: colors.$pfg-urgent;
         background: color.change(colors.$urgent, $alpha: config.$tint-weak);
       }
     }
@@ -24,7 +24,7 @@ headerbar {
     &.minimize {
       color: colors.$warn;
       &:hover {
-        color: colors.$yellow-light;
+        color: colors.$pfg-warn;
         background: color.change(colors.$warn, $alpha: config.$tint-weak);
       }
     }
@@ -32,7 +32,7 @@ headerbar {
     &.maximize {
       color: colors.$confirm;
       &:hover {
-        color: colors.$green-light;
+        color: colors.$pfg-confirm;
         background: color.change(colors.$confirm, $alpha: config.$tint-weak);
       }
     }

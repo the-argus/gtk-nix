@@ -27,7 +27,7 @@ button {
     background: color.change(colors.$urgent, $alpha: config.$tint-medium);
     color: colors.$white-strongest;
     &:hover:not(:active) {
-      background: color.change(colors.$red-light, $alpha: config.$tint-medium);
+      background: color.change(colors.$urgent, $alpha: config.$tint-strong);
     }
   }
 
