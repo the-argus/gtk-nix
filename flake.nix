@@ -4,7 +4,10 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
-    banner.url = "github:the-argus/banner.nix";
+    banner = {
+      url = "github:the-argus/banner.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     dream2nix = {
       url = "github:nix-community/dream2nix";
@@ -33,17 +36,26 @@
           overridesDirs = ["${dream2nix}/overrides"];
         };
       });
+    pkgs = genSystems (system: import nixpkgs {localSystem = {inherit system;};});
   in {
     homeManagerModule = import ./module.nix {inherit source banner dreamlib;};
+
+    packages = genSystems (
+      system:
+        import ./package.nix {
+          inherit source dreamlib banner;
+          pkgs = pkgs.${system};
+        }
+    );
 
     mkTheme = cfg: (genSystems
       (
         system: let
-          override = pkgs.lib.attrsets.recursiveUpdate;
-          pkgs = import nixpkgs {localSystem = {inherit system;};};
+          override = nixpkgs.lib.attrsets.recursiveUpdate;
         in
           import ./package.nix {
-            inherit source dreamlib pkgs banner;
+            inherit source dreamlib banner;
+            pkgs = pkgs.${system};
             cfg = override (import ./defaults.nix) cfg;
           }
       ));

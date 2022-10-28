@@ -42,14 +42,16 @@
     },
     "banner": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
-        "lastModified": 1666971779,
-        "narHash": "sha256-5kTfK/8xWPIUnAQOsVLpzB/Yrn4k6OoNwcyD+yJe/Z0=",
+        "lastModified": 1666973751,
+        "narHash": "sha256-KrHAdXuFmup0ek6yFRqxI0IuiwhwoGbQsdqU4roK300=",
         "owner": "the-argus",
         "repo": "banner.nix",
-        "rev": "c7d7d16544ec829b041a816992a8d37ba6f0e49d",
+        "rev": "7d1acf36f0fbc93a5d09718c8aa86b952022a5fa",
         "type": "github"
       },
       "original": {
@@ -223,22 +225,6 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1666867875,
-        "narHash": "sha256-3nD7iQXd/J6KjkT8IjozTuA5p8qjiLKTxvOUmH+AzNM=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "c132d0837dfb9035701dcd8fc91786c605c855c3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-22.05",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
         "lastModified": 1666869603,
         "narHash": "sha256-3V53or4Vpu4+LrGfGSh3T2V8+qf5RP6nRuex9GywkwE=",
         "owner": "NixOS",
@@ -298,7 +284,7 @@
       "inputs": {
         "banner": "banner",
         "dream2nix": "dream2nix",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs"
       }
     },
     "rust-analyzer-src": {
