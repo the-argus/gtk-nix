@@ -2,8 +2,8 @@
   pkgs,
   source,
   dreamlib,
+  banner,
   cfg,
-  dontPatch ? false,
   ...
 }: let
   inherit (pkgs) stdenv lib;
@@ -106,19 +106,56 @@
     (name: value: "\$${name}: ${toS value};")
     conf;
 
+  bannerPalette =
+    builtins.mapAttrs (_: value:
+      if banner.lib.color.hasOctothorpe value
+      then banner.lib.color.removeLeadingOctothorpe value
+      else value)
+    (
+      if builtins.typeOf cfg.palette == "attrs"
+      then cfg.palette
+      else if builtins.typeOf cfg.palette == "path"
+      then banner.lib.parsers.basicYamlToBanner cfg.palette
+      else abort "Palette must be a banner pallete \
+(see github:the-argus/banner.nix/lib/types.nix) or \
+a path to a banner yaml file."
+    );
+
+  whites =
+    if cfg.whites == null
+    then let
+      # white colors all default to nord white
+      mkWhite = alpha: "${bannerPalette.base05}${alpha}";
+    in {
+      strongest = mkWhite "FF";
+      strong = mkWhite "DE";
+      moderate = mkWhite "57";
+      weak = mkWhite "24";
+      weakest = mkWhite "0F";
+    }
+    else cfg.whites;
+  blacks =
+    if cfg.blacks == null
+    then let
+      # black colors all default to nord black
+      mkBlack = alpha: "${bannerPalette.base00}${alpha}";
+    in {
+      strongest = mkBlack "FF";
+      strong = mkBlack "DE";
+      moderate = mkBlack "6B";
+      weak = mkBlack "26";
+      weakest = mkBlack "0F";
+    }
+    else cfg.blacks;
+
   # create _colors.scss and _config.scss
   colorsScss = builtins.toFile "_colors.scss" ''
-    ${builtins.concatStringsSep "\n" (colorSetToSCSS "surface-" cfg.palette.surface)}
-    ${builtins.concatStringsSep "\n" (colorSetToSCSS "white-" cfg.palette.whites)}
-    ${builtins.concatStringsSep "\n" (colorSetToSCSS "black-" cfg.palette.blacks)}
+    ${builtins.concatStringsSep "\n" (colorSetToSCSS "white-" whites)}
+    ${builtins.concatStringsSep "\n" (colorSetToSCSS "black-" blacks)}
 
-    ${builtins.concatStringsSep "\n" (colorSetToSCSSSuffix "-normal" cfg.palette.normalColors)}
-    ${builtins.concatStringsSep "\n" (colorSetToSCSSSuffix "-light" cfg.palette.lightColors)}
+    ${builtins.concatStringsSep "\n" (colorSetToSCSSSuffix "" bannerPalette)}
 
-    $accent-primary: rgba(${builtins.concatStringsSep ", " (hexToRGBA cfg.palette.primaryAccent)});
-    $accent-secondary: rgba(${builtins.concatStringsSep ", " (hexToRGBA cfg.palette.secondaryAccent)});
-
-    @define-color borders #{"" +$surface-strong};
+    @define-color borders #{"" +$base00};
     ${cfg.extraColorSCSS}
   '';
 
@@ -170,15 +207,10 @@
     };
   themeName = "GtkNix";
 in
-  if dontPatch
-  then
-    (let
-      unpatchedName = "PhocusGtk";
-    in {
-      package = mkGtkNix phisch unpatchedName;
-      name = unpatchedName;
-    })
-  else {
+  pkgs.lib.trivial.warn "gtk-nix has undergone breaking changes. \
+If you experience errors, pin commit \
+c9ea9874f3de76bcc72a2cf9937565073195923b or update your configuration \
+as per the new README." {
     package = mkGtkNix patchedPhisch themeName;
     name = themeName;
   }

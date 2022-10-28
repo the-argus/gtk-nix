@@ -8,9 +8,8 @@ and applied to the theme.
 
 ## Credits
 
-This is packaging for Phocus Gtk, an excellent gtk theme. The packaging just
-patches Phocus to have different properties. This is only possible thanks to
-Phocus Gtk's great code structure and use of SCSS.
+This is a modified version of Phocus Gtk, an excellent gtk theme. This is only
+possible thanks to Phocus Gtk's great code structure and use of SCSS.
 
 ## Usage
 
@@ -49,34 +48,22 @@ imported to home-manager.
 
 ## Example Usage
 
-I'm not providing full documentation for every option since I didn't make
-phocus gtk and don't know the specifics what options affect. It varies between
-different GTK programs.
+For more information on what each color option is used for, visit
+[the banner palette specifications](https://github.com/the-argus/banner)
 
-### Minimal Configuration
+### Minimal configuration example
 
-An example for a user who just wants a slightly modified version of phocus gtk.
+By default, this theme is a nice nord GTK theme.
 
 ```nix
 { gtk-nix, ... }:
 {
   imports = [ gtk-nix.homeManagerModule ];
-
-  gtkNix = {
-    enable = true;
-    palette = {
-      # please don't actually use this config... it looks awful
-      primaryAccent = "FF0000";
-      secondaryAccent = "00FF00";
-    };
-  };
+  gtkNix.enable = true;
 }
 ```
 
-### Maximimalist Configuration
-
-This demonstrates *all* the configuration options available.
-It uses the default values for all of them.
+### Full configuration example
 
 ```nix
 { gtk-nix, ... }:
@@ -104,55 +91,72 @@ It uses the default values for all of them.
     # variable definitions.
     extraConfigSCSS = '''';
     extraColorSCSS = '''';
+      
+    whites = let
+      mkWhite = alpha: "f0f0f3${alpha}";
+    in {
+      strongest = mkWhite "FF";
+      strong = mkWhite "DE";
+      moderate = mkWhite "57";
+      weak = mkWhite "24";
+      weakest = mkWhite "0F";
+    };
+    blacks = let
+      mkBlack = alpha: "191724${alpha}";
+    in {
+      strongest = mkBlack "FF";
+      strong = mkBlack "DE";
+      moderate = mkBlack "6B";
+      weak = mkBlack "26";
+      weakest = mkBlack "0F";
+    };
 
-    palette = {
-      whites = let
-        mkWhite = alpha: "FFFFFF${alpha}";
-      in {
-        strongest = mkWhite "FF";
-        strong = mkWhite "DE";
-        moderate = mkWhite "57";
-        weak = mkWhite "24";
-        weakest = mkWhite "0F";
-      };
-      blacks = let
-        mkBlack = alpha: "0000000${alpha}";
-      in {
-        strongest = mkBlack "FF";
-        strong = mkBlack "DE";
-        moderate = mkBlack "6B";
-        weak = mkBlack "26";
-        weakest = mkBlack "0F";
-      };
-      surface = {
-        strongest = "0A0A0A";
-        strong = "141414";
-        moderate = "1C1C1C";
-        weak = "222222";
-        weakest = "282828";
-      };
-      normalColors = {
-        red = "DA5858";
-        orange = "ED9454";
-        yellow = "E8CA5E";
-        green = "3FC661";
-        cyan = "5CD8E6";
-        blue = "497EE9";
-        purple = "7154F2";
-        pink = "D56CC3";
-      };
-      lightColors = {
-        red = "E36D6D";
-        orange = "FCA669";
-        yellow = "FADD75";
-        green = "61D67E";
-        cyan = "7EEAF6";
-        blue = "5D8DEE";
-        purple = "8066F5";
-        pink = "DF81CF";
-      };
-      primaryAccent = "7154F2";
-      secondaryAccent = "3FC661";
+    palette = rec {
+      # the banner palette format. can also be a path to a yaml file
+      # instead of attrs. this example is rose pine.
+      base00 = "191724";
+      base01 = "1f1d2e";
+      base02 = "26233a";
+      base03 = "555169";
+      base04 = "6e6a86";
+      base05 = "e0def4";
+      base06 = "f0f0f3";
+      base07 = "c5c3ce";
+      base08 = "e2e1e7";
+      base09 = "eb6f92";
+      base0A = "f6c177";
+      base0B = "ebbcba";
+      base0C = "31748f";
+      base0D = "9ccfd8";
+      base0E = "c4a7e7";
+      base0F = "e5e5e5";
+
+      highlight =   base0E;
+      hialt0 =      base0A;
+      hialt1 =      base0E;
+      hialt2 =      base0B;
+      urgent =      base09;
+      warn =        base0A;
+      confirm =     base0D;
+      link =        base0E;
+
+      pfg-highlight =   base00;
+      pfg-hialt0 =      base00;
+      pfg-hialt1 =      base00;
+      pfg-hialt2 =      base05;
+      pfg-urgent =      base00;
+      pfg-warn =        base00;
+      pfg-confirm =     base00;
+      pfg-link =        base00;
+
+      ansi00 = base03;
+      ansi01 = base09;
+      ansi02 = base0D;
+      ansi03 = base0A;
+      ansi04 = base0C;
+      ansi05 = base0E;
+      ansi06 = base0B;
+      ansi07 = base05;
     };
   };
 }

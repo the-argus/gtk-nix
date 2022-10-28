@@ -1,79 +1,33 @@
 {
   source,
   dreamlib,
+  banner,
 }: {
   pkgs,
   config,
   ...
 }: let
-  inherit (pkgs) stdenv lib;
+  inherit (pkgs) lib;
   inherit (lib) mkOption mkEnableOption types;
   defaults = import ./defaults.nix;
-  defaultConfiguration = defaults.configuration;
-  defaultPalette = defaults.palette;
-  mkColor = default: (mkOption {
-    type = types.str;
+
+  nullColor = mkOption {
+    type = types.nullOr types.str;
     description = ''
       An RGB or RGBA color in hexadecimal format without a # symbol.
     '';
-    inherit default;
-  });
-
-  surfacePalette = types.submodule {
-    options =
-      builtins.mapAttrs (name: value: mkColor value)
-      defaultPalette.surface;
+    default = null;
   };
+
   whitePalette = types.submodule {
     options =
-      builtins.mapAttrs (name: value: mkColor value)
-      defaultPalette.whites;
+      builtins.mapAttrs (_: value: nullColor)
+      defaults.whites;
   };
   blackPalette = types.submodule {
     options =
-      builtins.mapAttrs (name: value: mkColor value)
-      defaultPalette.blacks;
-  };
-  mkColorPalette = colors:
-    mkOption {
-      type = types.submodule {
-        options = builtins.mapAttrs (name: color: mkColor color) colors;
-      };
-      description = "Highlight colors used rarely. Only colors you \
-      select as accents are used in every application.";
-      default = colors;
-    };
-  palette = types.submodule {
-    options = {
-      surface = mkOption {
-        type = surfacePalette;
-        description = ''
-          Base colors, usually greys, ordered from darkest (strongest) to
-          lightest (weakest). These make up the majority of the theme.
-        '';
-        default = defaultPalette.surface;
-      };
-      whites = mkOption {
-        type = whitePalette;
-        description = ''
-          Bright base colors, usually whites, at different levels of
-          transparency.
-        '';
-        default = defaultPalette.whites;
-      };
-      blacks = mkOption {
-        type = blackPalette;
-        description = ''
-          Dark base colors, usually blacks, at different levels of
-          transparency.
-        '';
-        default = defaultPalette.blacks;
-      };
-      normalColors = mkColorPalette defaultPalette.normalColors;
-      lightColors = mkColorPalette defaultPalette.lightColors;
-      primaryAccent = mkColor defaultPalette.primaryAccent;
-      secondaryAccent = mkColor defaultPalette.secondaryAccent;
-    };
+      builtins.mapAttrs (_: value: nullColor)
+      defaults.blacks;
   };
   cfg = config.gtkNix;
 in {
@@ -81,60 +35,77 @@ in {
     enable = mkEnableOption "Enable the nix-configurable gtk theme";
 
     palette = mkOption {
-      type = palette;
-      default = defaultPalette;
+      type = types.oneOf [
+        banner.types.banner
+        types.path
+      ];
+      default = defaults.palette;
+    };
+
+    # you can optionally define exactly
+    # what you want the blacks and whites
+    # of the color palette to be.
+    # by default, they are base00 and
+    # base05
+    blacks = mkOption {
+      type = types.nullOr blackPalette;
+      default = null;
+    };
+    whites = mkOption {
+      type = types.nullOr whitePalette;
+      default = null;
     };
 
     configuration = mkOption {
-      default = defaultConfiguration;
+      default = defaults.configuration;
       type = types.submodule {
         options = {
           spacing-small = mkOption {
             type = types.str;
-            default = defaultConfiguration.spacing-small;
+            default = defaults.configuration.spacing-small;
             description = "CSS spacing value for smaller gaps.";
           };
           spacing-medium = mkOption {
             type = types.str;
-            default = defaultConfiguration.spacing-medium;
+            default = defaults.configuration.spacing-medium;
             description = "CSS spacing value for medium gaps.";
           };
           spacing-large = mkOption {
             type = types.str;
-            default = defaultConfiguration.spacing-large;
+            default = defaults.configuration.spacing-large;
             description = "CSS spacing value for large gaps.";
           };
           tint-weak = mkOption {
             type = types.float;
-            default = defaultConfiguration.tint-weak;
+            default = defaults.configuration.tint-weak;
             description = "Value between 0 and 1 representing the opacity of \
             *very* transparent elements.";
           };
           tint-medium = mkOption {
             type = types.float;
-            default = defaultConfiguration.tint-medium;
+            default = defaults.configuration.tint-medium;
             description = "Value between 0 and 1 representing the opacity of \
             somewhat transparent elements.";
           };
           tint-strong = mkOption {
             type = types.float;
-            default = defaultConfiguration.tint-strong;
+            default = defaults.configuration.tint-strong;
             description = "Value between 0 and 1 representing the opacity of \
             *slightly* transparent elements.";
           };
           border-size = mkOption {
             type = types.str;
-            default = defaultConfiguration.border-size;
+            default = defaults.configuration.border-size;
             description = "CSS spacing value for the thickness of borders.";
           };
           radius = mkOption {
             type = types.str;
-            default = defaultConfiguration.radius;
+            default = defaults.configuration.radius;
             description = "CSS spacing value for how round corners should be.";
           };
           disabled-opacity = mkOption {
             type = types.float;
-            default = defaultConfiguration.disabled-opacity;
+            default = defaults.configuration.disabled-opacity;
             description = "Opacity value from 0 to 1 for disabled UI elements.";
           };
         };
@@ -168,7 +139,15 @@ in {
   };
 
   config = let
-    gtk-nix-theme = import ./package.nix {inherit pkgs cfg source dreamlib;};
+    gtk-nix-theme = import ./package.nix {
+      inherit
+        pkgs
+        cfg
+        source
+        dreamlib
+        banner
+        ;
+    };
   in {
     gtk.theme = lib.mkIf cfg.enable gtk-nix-theme;
   };
