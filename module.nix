@@ -21,12 +21,12 @@
 
   whitePalette = types.submodule {
     options =
-      builtins.mapAttrs (_: value: nullColor)
+      builtins.mapAttrs (_: _: nullColor)
       defaults.whites;
   };
   blackPalette = types.submodule {
     options =
-      builtins.mapAttrs (_: value: nullColor)
+      builtins.mapAttrs (_: _: nullColor)
       defaults.blacks;
   };
   cfg = config.gtkNix;
