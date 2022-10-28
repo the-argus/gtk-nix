@@ -2,7 +2,7 @@
 @use '../config';
 
 tooltip {
-  background: colors.$base03est;
+  background: colors.$base03;
 
   > * {
     margin: config.$spacing-medium;
