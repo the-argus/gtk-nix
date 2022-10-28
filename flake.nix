@@ -42,11 +42,13 @@
 
     packages = genSystems (
       system: rec {
-        gtkNix = import ./package.nix {
-          inherit source dreamlib banner;
-          pkgs = pkgs.${system};
-          cfg = import ./defaults.nix;
-        };
+        gtkNix =
+          (import ./package.nix {
+            inherit source dreamlib banner;
+            pkgs = pkgs.${system};
+            cfg = import ./defaults.nix;
+          })
+          .package;
         default = gtkNix;
       }
     );
@@ -56,11 +58,12 @@
         system: let
           override = nixpkgs.lib.attrsets.recursiveUpdate;
         in
-          import ./package.nix {
+          (import ./package.nix {
             inherit source dreamlib banner;
             pkgs = pkgs.${system};
             cfg = override (import ./defaults.nix) cfg;
-          }
+          })
+          .package
       ));
   };
 }
