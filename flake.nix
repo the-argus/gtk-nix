@@ -45,6 +45,7 @@
         import ./package.nix {
           inherit source dreamlib banner;
           pkgs = pkgs.${system};
+          cfg = import ./defaults.nix;
         }
     );
 
