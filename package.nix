@@ -112,7 +112,7 @@
       then banner.lib.color.removeLeadingOctothorpe value
       else value)
     (
-      if builtins.typeOf cfg.palette == "attrs"
+      if builtins.typeOf cfg.palette == "set"
       then cfg.palette
       else if builtins.typeOf cfg.palette == "path"
       then banner.lib.parsers.basicYamlToBanner cfg.palette
