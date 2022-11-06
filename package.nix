@@ -203,11 +203,7 @@
       '';
     };
   themeName = "GtkNix";
-in
-  pkgs.lib.trivial.warn "gtk-nix has undergone breaking changes. \
-If you experience errors, pin commit \
-c9ea9874f3de76bcc72a2cf9937565073195923b or update your \
-configuration as per the new README." {
-    package = mkGtkNix patchedPhisch themeName;
-    name = themeName;
-  }
+in {
+  package = mkGtkNix patchedPhisch themeName;
+  name = themeName;
+}
