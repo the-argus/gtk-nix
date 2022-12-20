@@ -17,7 +17,7 @@ headerbar {
       color: colors.$urgent;
       &:hover {
         color: colors.$pfg-urgent;
-        background: color.change(colors.$urgent, $alpha: config.$tint-weak);
+        background: colors.$urgent;
       }
     }
 
@@ -25,7 +25,7 @@ headerbar {
       color: colors.$warn;
       &:hover {
         color: colors.$pfg-warn;
-        background: color.change(colors.$warn, $alpha: config.$tint-weak);
+        background: colors.$warn;
       }
     }
 
@@ -33,7 +33,7 @@ headerbar {
       color: colors.$confirm;
       &:hover {
         color: colors.$pfg-confirm;
-        background: color.change(colors.$confirm, $alpha: config.$tint-weak);
+        background: colors.$confirm;
       }
     }
   }
