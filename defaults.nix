@@ -1,8 +1,8 @@
 {
   configuration = {
-    spacing-small = "0.3em";
-    spacing-medium = "0.6em";
-    spacing-large = "0.9em";
+    spacing-small = "0.2em";
+    spacing-medium = "0.4em";
+    spacing-large = "0.6em";
     tint-weak = 0.3;
     tint-medium = 0.6;
     tint-strong = 0.9;
