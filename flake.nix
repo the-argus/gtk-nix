@@ -10,7 +10,7 @@
     };
 
     dream2nix = {
-      url = "github:nix-community/dream2nix";
+      url = "github:nix-community/dream2nix?ref=legacy";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -28,23 +28,19 @@
     ];
     genSystems = nixpkgs.lib.genAttrs supportedSystems;
 
-    dreamlib = genSystems (system:
-      dream2nix.lib.init {
-        pkgs = import nixpkgs {inherit system;};
-        config = {
-          projectRoot = ./.;
-          overridesDirs = ["${dream2nix}/overrides"];
-        };
-      });
     pkgs = genSystems (system: import nixpkgs {localSystem = {inherit system;};});
   in {
-    homeManagerModule = import ./module.nix {inherit source banner dreamlib;};
+    homeManagerModule = import ./module.nix {
+      inherit source banner;
+      dreamlib = dream2nix.lib;
+    };
 
     packages = genSystems (
       system: rec {
         gtkNix =
           (import ./package.nix {
-            inherit source dreamlib banner;
+            inherit source banner;
+            dreamlib = dream2nix.lib;
             pkgs = pkgs.${system};
             cfg = import ./defaults.nix;
           })
@@ -59,7 +55,8 @@
           override = nixpkgs.lib.attrsets.recursiveUpdate;
         in
           (import ./package.nix {
-            inherit source dreamlib banner;
+            inherit source banner;
+            dreamlib = dream2nix.lib;
             pkgs = pkgs.${system};
             cfg = override (import ./defaults.nix) cfg;
           })

@@ -59,14 +59,16 @@
       decimalDigits = reverseList (map oneDigitHexToDecimal twoDigitHex);
       # scale each digit to its place (first place is * 1, second
       # place is * 16)
-      decimalValues = lib.lists.imap0 (index: value:
-        if index == 0
-        then value
-        else if index == 1
-        then (index * 16) * value
-        else abort "twoDigitHexToDecimal can only process a hex string \
+      decimalValues =
+        lib.lists.imap0
+        (index: value:
+          if index == 0
+          then value
+          else if index == 1
+          then (index * 16) * value
+          else abort "twoDigitHexToDecimal can only process a hex string \
           with length 2.")
-      decimalDigits;
+        decimalDigits;
     in
       # add all the decimal values of each hex digit
       lib.lists.foldr (a: b: a + b) 0 decimalValues;
@@ -79,13 +81,15 @@
       ++ (map (item: (item / 255.0)) (sublist 3 1 decimalChannels)));
 
   colorSetToSCSS = prefix: set:
-    lib.attrsets.mapAttrsToList (
+    lib.attrsets.mapAttrsToList
+    (
       name: value: "\$${prefix}${name}: rgba(${builtins.concatStringsSep ", " (hexToRGBA value)});"
     )
     set;
 
   colorSetToSCSSSuffix = suffix: set:
-    lib.attrsets.mapAttrsToList (
+    lib.attrsets.mapAttrsToList
+    (
       name: value: "\$${name}${suffix}: rgba(${builtins.concatStringsSep ", " (hexToRGBA value)});"
     )
     set;
@@ -106,7 +110,8 @@
     (name: value: "\$${name}: ${toS value};")
     conf;
 
-  bannerPalette = banner.lib.util.removeMeta (builtins.mapAttrs (_: value:
+  bannerPalette = banner.lib.util.removeMeta (builtins.mapAttrs
+    (_: value:
       if banner.lib.color.hasOctothorpe value
       then banner.lib.color.removeLeadingOctothorpe value
       else value)
@@ -115,7 +120,7 @@
       then cfg.palette
       else if builtins.typeOf cfg.palette == "path"
       then banner.lib.parsers.basicYamlToBanner cfg.palette
-      else abort "Palette must be a banner pallete (see github:the-argus/banner.nix/lib/types.nix) or a path to a banner yaml file. Type ${builtins.typeOf cfg.palette} is not supported."
+      else abort "Palette must be a banner palette (see github:the-argus/banner.nix/lib/types.nix) or a path to a banner yaml file. Type ${builtins.typeOf cfg.palette} is not supported."
     ));
 
   whites =
@@ -182,11 +187,13 @@
   };
 
   # "build" the package
-  patchedDream = dreamlib.${pkgs.system}.makeOutputs {source = patchedSource;};
-  dream = dreamlib.${pkgs.system}.makeOutputs {inherit source;};
+  patchedDream = dreamlib.makeFlakeOutputs {
+    projects = ./projects.toml;
+    inherit pkgs;
+    source = patchedSource;
+  };
 
-  patchedPhisch = patchedDream.packages.phisch;
-  phisch = dream.package.phisch;
+  patchedPhisch = patchedDream.packages.${pkgs.system}.phisch;
 
   # make an installed version of the package
   mkGtkNix = src: outname:
