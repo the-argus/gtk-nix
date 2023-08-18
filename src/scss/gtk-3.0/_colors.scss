@@ -46,4 +46,4 @@ $pfg-confirm:    #2E3440;
 $pfg-link:       #E5E9F0;
 
 // TODO: is there a better way to do this? this is for example used in gnome-calculator for the result top-border
-@define-color borders #{"" +$base00};
+@define-color borders #{"" (+$base00)};

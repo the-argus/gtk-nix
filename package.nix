@@ -1,7 +1,6 @@
 {
   pkgs,
   source,
-  dreamlib,
   banner,
   cfg,
   ...
@@ -169,7 +168,7 @@
 
   # first patch the original source
   patchedSource = stdenv.mkDerivation {
-    name = "patchedPhisch";
+    name = "patchedPhocus";
     src = source;
     dontBuild = true;
     dontPatch = false;
@@ -186,31 +185,30 @@
     '';
   };
 
-  # "build" the package
-  patchedDream = dreamlib.makeFlakeOutputs {
-    projects = ./projects.toml;
-    inherit pkgs;
-    source = patchedSource;
-  };
-
-  patchedPhisch = patchedDream.packages.${pkgs.system}.phisch;
-
   # make an installed version of the package
   mkGtkNix = src: outname:
     stdenv.mkDerivation {
       name = "gtkNixTheme";
       inherit src;
-      dontBuild = true; # this is just a meta package for installation
+      nativeBuildInputs = [pkgs.dart-sass];
+
+      # create the gtk.css in the current directory
+      buildPhase = ''
+        sass $src/scss/gtk-3.0/gtk.scss gtk.css
+      '';
+
       installPhase = ''
-        installdir=$out/share/themes/${outname}
-        mkdir -p $installdir
-        cp -r $src/lib/node_modules/phisch/gtk-3.0 $installdir
-        cp -r $src/lib/node_modules/phisch/assets $installdir
-        cp -r $src/lib/node_modules/phisch/index.theme $installdir
+        outdir="$out/share/themes/${outname}"
+        mkdir -p $outdir
+        cp -r $src/assets $outdir
+        cp index.theme $outdir
+        mkdir -p $outdir/gtk-3.0
+        mv gtk.css $outdir/gtk-3.0
       '';
     };
+
   themeName = "GtkNix";
 in {
-  package = mkGtkNix patchedPhisch themeName;
+  package = mkGtkNix patchedSource themeName;
   name = themeName;
 }

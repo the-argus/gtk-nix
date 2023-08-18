@@ -3,64 +3,52 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
 
     banner = {
       url = "github:the-argus/banner.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    dream2nix = {
-      url = "github:nix-community/dream2nix?ref=legacy";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
   outputs = {
+    self,
     nixpkgs,
-    dream2nix,
     banner,
+    flake-utils,
     ...
   }: let
     source = ./src;
 
-    supportedSystems = [
-      "aarch64-linux"
-      "x86_64-linux"
+    supportedSystems = let
+      inherit (flake-utils.lib) system;
+    in [
+      system.aarch64-linux
+      system.x86_64-linux
     ];
-    genSystems = nixpkgs.lib.genAttrs supportedSystems;
+  in
+    flake-utils.lib.eachSystem supportedSystems (
+      system: let
+        pkgs = import nixpkgs {inherit system;};
 
-    pkgs = genSystems (system: import nixpkgs {localSystem = {inherit system;};});
-  in {
-    homeManagerModule = import ./module.nix {
-      inherit source banner;
-      dreamlib = dream2nix.lib;
-    };
-
-    packages = genSystems (
-      system: rec {
-        gtkNix =
-          (import ./package.nix {
-            inherit source banner;
-            dreamlib = dream2nix.lib;
-            pkgs = pkgs.${system};
-            cfg = import ./defaults.nix;
-          })
-          .package;
-        default = gtkNix;
-      }
-    );
-
-    mkTheme = cfg: (genSystems
-      (
-        system: let
+        mkTheme = cfg: let
           override = nixpkgs.lib.attrsets.recursiveUpdate;
         in
           (import ./package.nix {
-            inherit source banner;
-            dreamlib = dream2nix.lib;
-            pkgs = pkgs.${system};
+            inherit source banner pkgs;
             cfg = override (import ./defaults.nix) cfg;
           })
-          .package
-      ));
-  };
+          .package;
+      in {
+        homeManagerModule = import ./module.nix {
+          inherit source banner;
+        };
+
+        packages = {
+          gtkNix = mkTheme (import ./defaults.nix);
+          default = self.packages.${system}.gtkNix;
+        };
+
+        inherit mkTheme;
+      }
+    );
 }

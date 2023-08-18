@@ -1,6 +1,5 @@
 {
   source,
-  dreamlib,
   banner,
 }: {
   pkgs,
@@ -144,7 +143,6 @@ in {
         pkgs
         cfg
         source
-        dreamlib
         banner
         ;
     };
